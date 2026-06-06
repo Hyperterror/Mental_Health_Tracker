@@ -56,8 +56,20 @@ export async function buildApp() {
     },
   });
 
+  const allowedOrigins = [
+    env.FRONTEND_URL.replace(/\/$/, ""),
+    "http://localhost:3000",
+    "http://localhost:3001"
+  ];
+
   await app.register(cors, {
-    origin: [env.FRONTEND_URL],
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+        cb(null, true);
+        return;
+      }
+      cb(new Error("Not allowed by CORS"), false);
+    },
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   });
