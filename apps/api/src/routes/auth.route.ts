@@ -122,7 +122,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       return reply.status(201).send({
         success: true,
-        data: tokens,
+        data: { user, tokens },
       });
     } catch (err) {
       fastify.log.error({ err }, "Error in POST /auth/register");
@@ -201,7 +201,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       return reply.send({
         success: true,
-        data: tokens,
+        data: { user, tokens },
       });
     } catch (err) {
       fastify.log.error({ err }, "Error in POST /auth/login");
@@ -276,7 +276,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
 
       return reply.send({
         success: true,
-        data: tokens,
+        data: { user, tokens },
       });
     } catch (err) {
       fastify.log.error({ err }, "Error in POST /auth/refresh");
