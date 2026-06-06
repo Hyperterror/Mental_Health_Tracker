@@ -3,14 +3,11 @@ import path from 'path';
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
+    environment: 'node',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-  },
-  esbuild: {
-    jsxInject: `import React from 'react'`,
   },
 });

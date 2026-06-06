@@ -18,7 +18,7 @@ describe('Auth Store', () => {
     id: 'user-123',
     email: 'test@example.com',
     name: 'Test User',
-    role: Role.STUDENT,
+    role: 'STUDENT' as any,
   };
 
   const mockTokens = {

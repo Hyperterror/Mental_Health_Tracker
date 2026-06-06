@@ -41,7 +41,7 @@ describe('PomodoroTimer Component', () => {
     expect(screen.getByText('25:00')).toBeTruthy();
     
     // Check state text
-    expect(screen.getByText('Focus time')).toBeTruthy();
+    expect(screen.getAllByText('Focus time')).toBeTruthy();
   });
 
   it('calls pauseSession when pause button is clicked', () => {

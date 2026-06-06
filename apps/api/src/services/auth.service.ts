@@ -13,6 +13,14 @@ export interface TokenPair {
   expiresIn: number; // seconds
 }
 
+/**
+ * Registers a new user with the specified credentials.
+ * @param data - The user registration payload containing email, name, password, etc.
+ * @returns An ApiResponse containing the newly created user and JWT tokens.
+ */
+export async function registerUser(data: any): Promise<ApiResponse<{ user: any; accessToken: string; refreshToken: string }>> { expiresIn: number; // seconds
+}
+
 export interface RefreshPayload {
   userId: string;
 }
@@ -21,6 +29,11 @@ export interface RefreshPayload {
 // Password hashing
 // ============================================================
 
+/**
+ * Hashes a plaintext password using Argon2id.
+ * @param password - The raw password string to hash.
+ * @returns The resulting hash string.
+ */
 export async function hashPassword(password: string): Promise<string> {
   try {
     return await argon2.hash(password, {
