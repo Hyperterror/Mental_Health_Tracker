@@ -51,10 +51,10 @@ export const authRoutes: FastifyPluginAsync = async (fastify) => {
         email,
         password,
         examType,
-        targetExamDate: targetExamDate || undefined,
+        targetExamDate,
         dailyGoalMinutes,
         isMinor,
-        parentEmail: parentEmail || undefined,
+        parentEmail,
       } = parseResult.data;
 
       // Check if email already taken
