@@ -1,187 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─────────────────── CSS Variables ─────────────────── */
 :root {
-  --color-dark: #0f0e17;
-  --color-card: #1a1a2e;
-  --color-indigo: #1e1b4b;
-  --color-teal: #0d9488;
-  --color-gold: #f59e0b;
-  --color-slate: #64748b;
-  --color-text: #e2e8f0;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --color-primary: #C8B6A6;
+  --color-surface: #FDFBF9;
+  --color-on-surface: #2D2926;
 }
 
-/* ─────────────────── Base Styles ─────────────────── */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--color-dark);
-  color: var(--color-text);
-  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: "Inter", sans-serif;
   min-height: 100vh;
 }
 
-/* ─────────────────── Custom Scrollbar ─────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a2e;
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0d9488;
+  background: #C8B6A6;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0f766e;
+  background: #B09B8B;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #0d9488 #1a1a2e;
-}
-
-/* ─────────────────── Text Selection ─────────────────── */
-::selection {
-  background-color: rgba(13, 148, 136, 0.3);
-  color: #e2e8f0;
-}
-
-/* ─────────────────── Glassmorphism Utility ─────────────────── */
 @layer components {
-  .glass {
-    @apply backdrop-blur-xl bg-white/5 border border-white/10;
-  }
-
-  .glass-card {
-    @apply backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl;
-  }
-
-  .glass-card-md {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl;
-  }
-
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-gradient-to-r from-teal-500 to-cyan-500
-           text-white font-semibold text-sm
-           hover:from-teal-400 hover:to-cyan-400
-           active:scale-95
-           transition-all duration-200
+           bg-primary text-on-primary font-headline font-bold text-sm
+           hover:opacity-90 active:scale-95 transition-all
            min-h-[44px] min-w-[44px]
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           disabled:opacity-50 disabled:cursor-not-allowed shadow-sm;
   }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-white/10 border border-white/20
-           text-white font-semibold text-sm
-           hover:bg-white/20
-           active:scale-95
-           transition-all duration-200
-           min-h-[44px] min-w-[44px]
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-red-500/20 border border-red-500/30
-           text-red-400 font-semibold text-sm
-           hover:bg-red-500/30
-           active:scale-95
-           transition-all duration-200
-           min-h-[44px] min-w-[44px]
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .input-field {
-    @apply w-full px-4 py-3 rounded-xl
-           bg-white/5 border border-white/10
-           text-mindful-text placeholder-mindful-slate
-           focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50
-           transition-all duration-200
-           min-h-[44px];
-  }
-
-  .chip {
-    @apply inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium
-           border transition-all duration-150 cursor-pointer
-           min-h-[36px] select-none;
-  }
-
-  .chip-active {
-    @apply bg-teal-500/20 border-teal-500/50 text-teal-300;
-  }
-
-  .chip-inactive {
-    @apply bg-white/5 border-white/10 text-mindful-slate hover:bg-white/10 hover:text-mindful-text;
-  }
-}
-
-/* ─────────────────── Gradient Animations ─────────────────── */
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.gradient-animate {
-  background-size: 200% 200%;
-  animation: gradient-shift 6s ease infinite;
-}
-
-/* ─────────────────── Focus Ring ─────────────────── */
-:focus-visible {
-  outline: 2px solid #0d9488;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* ─────────────────── Loading Skeleton ─────────────────── */
-@keyframes skeleton-loading {
-  0% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.4; }
-}
-
-.skeleton {
-  animation: skeleton-loading 1.5s ease-in-out infinite;
-  background-color: rgba(255, 255, 255, 0.06);
-  border-radius: 0.5rem;
-}
-
-/* ─────────────────── Range Input Styling ─────────────────── */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-input[type="range"]::-webkit-slider-track {
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #0d9488;
-  border: 2px solid #e2e8f0;
-  margin-top: -7px;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.5);
 }

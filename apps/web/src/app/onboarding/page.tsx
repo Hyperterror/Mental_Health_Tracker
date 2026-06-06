@@ -1,357 +1,137 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Brain, ChevronRight, ChevronLeft, Check, Loader2, Camera } from "lucide-react";
-import apiClient from "@/lib/axios";
-import { useAuthStore } from "@/store/auth.store";
-import { cn } from "@/lib/utils";
-
-const STEPS = [
-  { label: "Exam Details", step: 1 },
-  { label: "Study Goal", step: 2 },
-  { label: "Check-in Time", step: 3 },
-  { label: "Camera Consent", step: 4 },
-];
-
-const slideVariants = {
-  enter: (dir: number) => ({
-    x: dir > 0 ? 80 : -80,
-    opacity: 0,
-  }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({
-    x: dir > 0 ? -80 : 80,
-    opacity: 0,
-  }),
-};
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { user, updateUser } = useAuthStore();
-  const [step, setStep] = useState(1);
-  const [direction, setDirection] = useState(1);
+  const [goal, setGoal] = useState(6);
+  const [examDate, setExamDate] = useState("");
+  const [targetExam, setTargetExam] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const [dailyGoal, setDailyGoal] = useState(150);
-  const [checkInTime, setCheckInTime] = useState("20:00");
-  const [cameraOptIn, setCameraOptIn] = useState(false);
+  useEffect(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 3);
+    setExamDate(d.toISOString().split("T")[0]);
+  }, []);
 
-  const goNext = () => {
-    setDirection(1);
-    setStep((s) => Math.min(s + 1, 4));
-  };
-
-  const goPrev = () => {
-    setDirection(-1);
-    setStep((s) => Math.max(s - 1, 1));
-  };
-
-  const handleComplete = async () => {
+  const handleContinue = () => {
     setIsSubmitting(true);
-    setError(null);
-    try {
-      await apiClient.patch("/api/v1/user/profile", {
-        dailyGoalMinutes: dailyGoal,
-        stressCheckInTime: checkInTime,
-        cameraOptIn,
-      });
-      updateUser({ dailyGoalMinutes: dailyGoal, stressCheckInTime: checkInTime, cameraOptIn });
-      router.push("/dashboard");
-    } catch {
-      setError("Failed to save preferences. Please try again.");
-    } finally {
+    setTimeout(() => {
       setIsSubmitting(false);
-    }
-  };
-
-  const formatGoal = (mins: number) => {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return h > 0 ? `${h}h ${m > 0 ? `${m}m` : ""}` : `${m}m`;
+      router.push("/dashboard");
+    }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/3 -left-20 w-72 h-72 rounded-full bg-teal-500/8 blur-3xl" />
-        <div className="absolute bottom-1/3 -right-20 w-72 h-72 rounded-full bg-violet-500/8 blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-lg">
-        {/* Header */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center mb-4 shadow-lg shadow-teal-500/25">
-            <Brain size={24} className="text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Let&apos;s set you up</h1>
-          <p className="text-mindful-slate text-sm mt-1">Step {step} of 4</p>
+    <div className="font-body text-on-surface selection:bg-primary/30 min-h-screen bg-surface">
+      {/* TopAppBar Section */}
+      <header className="fixed top-0 left-0 w-full bg-surface dark:bg-surface flex items-center justify-center h-16 px-4 z-50">
+        <div className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>spa</span>
+          <h1 className="text-xl font-headline font-black text-primary dark:text-primary tracking-tight">MindSprint AI</h1>
         </div>
+      </header>
 
-        {/* Progress bar */}
-        <div className="flex gap-2 mb-8">
-          {STEPS.map((s) => (
-            <div key={s.step} className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/10">
-              <motion.div
-                className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full"
-                initial={false}
-                animate={{ width: step >= s.step ? "100%" : "0%" }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+      <main className="pt-16 pb-24 min-h-screen flex flex-col max-w-lg mx-auto px-6">
+        {/* Hero Section */}
+        <section className="mt-8 mb-10 text-center">
+          <div className="relative w-full aspect-square max-w-[320px] mx-auto overflow-hidden rounded-xl shadow-sm bg-surface-variant">
+            <img 
+              alt="MindSprint AI Onboarding Illustration" 
+              className="w-full h-full object-cover" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlMOGgog6SW7FyxaHYGrWSRbCkKXjSvyz2Yel9vPv-84ssD1WUwhvLwhhui2zym4DXhQx_SiOc8kW4vKKOMEECpOXvOSM67k5psdc3_WN92kQ30MTZ0BVtNamXJUp6XJ282eT5kVDdDwiPqEMKg6sAsoyG3tVO3Zng9StZgXH3TM3ZwPw2r2mxr6CcStYojdQC3kv8FS_q9HSSPoxWHJ2_FWCZK9qTxDWRzoh_Gy9fZDx5-q_XdxdwZCMt7lEz45OSuV5SCigtgLk"
+            />
+          </div>
+        </section>
+
+        {/* Welcome Header */}
+        <section className="mb-10 text-center">
+          <h2 className="font-headline text-3xl font-extrabold text-on-surface mb-2 tracking-tight">Welcome to MindSprint AI</h2>
+          <p className="text-on-surface-variant text-lg">Let&apos;s personalize your wellness journey.</p>
+        </section>
+
+        {/* Form Section */}
+        <section className="space-y-8 flex-grow">
+          {/* Target Exam Dropdown */}
+          <div className="space-y-2">
+            <label className="block font-label text-sm font-semibold text-on-primary-container ml-1" htmlFor="target-exam">Target Exam</label>
+            <div className="relative">
+              <select 
+                className="w-full h-14 pl-4 pr-10 bg-primary-container border-none rounded-xl text-on-primary-container focus:ring-2 focus:ring-primary appearance-none transition-all" 
+                id="target-exam"
+                value={targetExam}
+                onChange={(e) => setTargetExam(e.target.value)}
+              >
+                <option disabled value="">Select your exam</option>
+                <option value="NEET">NEET</option>
+                <option value="JEE">JEE</option>
+                <option value="CUET">CUET</option>
+                <option value="UPSC">UPSC</option>
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+                <span className="material-symbols-outlined">expand_more</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Daily Study Goal Slider */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center ml-1">
+              <label className="font-label text-sm font-semibold text-on-primary-container">Daily Study Goal</label>
+              <span className="text-primary font-bold text-lg" id="goal-value">{goal} {goal === 1 ? "hour" : "hours"}</span>
+            </div>
+            <div className="px-2">
+              <input 
+                className="w-full h-2 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" 
+                id="goal-slider" 
+                max="16" 
+                min="1" 
+                type="range" 
+                value={goal}
+                onChange={(e) => setGoal(Number(e.target.value))}
               />
             </div>
-          ))}
-        </div>
-
-        {/* Step labels */}
-        <div className="flex gap-2 mb-6">
-          {STEPS.map((s) => (
-            <p
-              key={s.step}
-              className={cn(
-                "flex-1 text-center text-xs font-medium transition-colors",
-                step === s.step ? "text-teal-400" : "text-mindful-slate"
-              )}
-            >
-              {s.label}
-            </p>
-          ))}
-        </div>
-
-        {/* Step content */}
-        <div className="glass-card p-8 overflow-hidden">
-          <AnimatePresence mode="wait" custom={direction}>
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-              >
-                <h2 className="text-xl font-bold text-white mb-2">Your exam details</h2>
-                <p className="text-mindful-slate text-sm mb-6">
-                  Here&apos;s what you&apos;ve shared with us.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-mindful-slate text-sm">Name</span>
-                    <span className="text-white font-medium">{user?.name ?? "—"}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-mindful-slate text-sm">Exam</span>
-                    <span className="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-sm font-semibold">
-                      {user?.examType ?? "—"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-mindful-slate text-sm">Target date</span>
-                    <span className="text-white font-medium">
-                      {user?.targetExamDate
-                        ? new Date(user.targetExamDate).toLocaleDateString("en-IN", {
-                            day: "numeric", month: "short", year: "numeric",
-                          })
-                        : "Not set"}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-              >
-                <h2 className="text-xl font-bold text-white mb-2">Daily study goal</h2>
-                <p className="text-mindful-slate text-sm mb-8">
-                  How many hours do you aim to study per day?
-                </p>
-                <div className="text-center mb-8">
-                  <span className="text-5xl font-bold bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
-                    {formatGoal(dailyGoal)}
-                  </span>
-                  <p className="text-mindful-slate text-sm mt-1">per day</p>
-                </div>
-                <input
-                  type="range"
-                  min={30}
-                  max={480}
-                  step={15}
-                  value={dailyGoal}
-                  onChange={(e) => setDailyGoal(Number(e.target.value))}
-                  className="w-full accent-teal-500"
-                  style={{
-                    background: `linear-gradient(to right, #0d9488 0%, #0d9488 ${((dailyGoal - 30) / 450) * 100}%, rgba(255,255,255,0.1) ${((dailyGoal - 30) / 450) * 100}%, rgba(255,255,255,0.1) 100%)`,
-                  }}
-                  aria-label="Daily study goal in minutes"
-                />
-                <div className="flex justify-between text-xs text-mindful-slate mt-2">
-                  <span>30m</span>
-                  <span>8h</span>
-                </div>
-                <p className="text-center text-xs text-mindful-slate mt-4">
-                  We recommend starting with 2-3 hours and building up gradually.
-                </p>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-              >
-                <h2 className="text-xl font-bold text-white mb-2">Daily check-in time</h2>
-                <p className="text-mindful-slate text-sm mb-8">
-                  When should we remind you to log your mood?
-                </p>
-                <div className="flex justify-center mb-6">
-                  <input
-                    type="time"
-                    value={checkInTime}
-                    onChange={(e) => setCheckInTime(e.target.value)}
-                    className="input-field w-48 text-center text-2xl font-bold text-white"
-                    aria-label="Daily check-in time"
-                  />
-                </div>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {["07:00", "12:00", "18:00", "20:00", "22:00"].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setCheckInTime(t)}
-                      className={cn(
-                        "chip",
-                        checkInTime === t ? "chip-active" : "chip-inactive"
-                      )}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 4 && (
-              <motion.div
-                key="step4"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-              >
-                <h2 className="text-xl font-bold text-white mb-2">Eye fatigue detection</h2>
-                <p className="text-mindful-slate text-sm mb-6">
-                  Optional: MindfulPrep can detect eye fatigue to suggest breaks at the right time.
-                </p>
-                <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/20 mb-6">
-                  <div className="flex items-start gap-3">
-                    <Camera size={20} className="text-teal-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-semibold text-teal-300 mb-1">
-                        Privacy-first design
-                      </p>
-                      <p className="text-xs text-mindful-slate leading-relaxed">
-                        We detect eye fatigue <strong className="text-teal-300">locally on your device</strong>.
-                        No video leaves your browser — ever. All inference runs in your browser using on-device ML.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
-                  <div>
-                    <p className="text-white font-medium text-sm">Enable camera detection</p>
-                    <p className="text-mindful-slate text-xs mt-0.5">
-                      {cameraOptIn ? "Camera will activate during study sessions" : "You can enable this later in settings"}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={cameraOptIn}
-                    onClick={() => setCameraOptIn((v) => !v)}
-                    className="relative flex items-center min-h-[44px] min-w-[44px]"
-                  >
-                    <div
-                      className={cn(
-                        "w-12 h-6 rounded-full transition-colors duration-200",
-                        cameraOptIn ? "bg-teal-500" : "bg-white/10"
-                      )}
-                    />
-                    <motion.div
-                      className="absolute left-1 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow"
-                      animate={{ x: cameraOptIn ? 24 : 0 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  </button>
-                </div>
-
-                {error && (
-                  <p className="mt-4 text-sm text-red-400 text-center">{error}</p>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
-            <button
-              type="button"
-              onClick={goPrev}
-              disabled={step === 1}
-              className={cn(
-                "btn-secondary px-5 py-2.5 text-sm",
-                step === 1 && "opacity-0 pointer-events-none"
-              )}
-            >
-              <ChevronLeft size={16} />
-              Back
-            </button>
-
-            {step < 4 ? (
-              <button type="button" onClick={goNext} className="btn-primary px-6 py-2.5 text-sm">
-                Continue
-                <ChevronRight size={16} />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleComplete}
-                disabled={isSubmitting}
-                className="btn-primary px-6 py-2.5 text-sm"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Check size={16} />
-                    Let&apos;s go!
-                  </>
-                )}
-              </button>
-            )}
+            <div className="flex justify-between text-[10px] text-on-surface-variant px-1 font-medium">
+              <span>1 HR</span>
+              <span>16 HRS</span>
+            </div>
           </div>
+
+          {/* Exam Date Picker */}
+          <div className="space-y-2">
+            <label className="block font-label text-sm font-semibold text-on-primary-container ml-1" htmlFor="exam-date">Exam Date</label>
+            <div className="relative">
+              <input 
+                className="w-full h-14 px-4 bg-primary-container border-none rounded-xl text-on-primary-container focus:ring-2 focus:ring-primary transition-all" 
+                id="exam-date" 
+                type="date"
+                value={examDate}
+                onChange={(e) => setExamDate(e.target.value)}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Footer / Action Section */}
+        <div className="fixed bottom-0 left-0 w-full p-6 bg-gradient-to-t from-surface via-surface to-transparent md:static md:bg-transparent md:p-0 md:mt-12">
+          <button 
+            className="w-full max-w-lg mx-auto h-16 bg-primary text-on-primary font-headline font-bold text-lg rounded-full shadow-lg hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 group" 
+            onClick={handleContinue}
+            disabled={isSubmitting || targetExam === ""}
+          >
+            {isSubmitting ? (
+              <span className="material-symbols-outlined animate-spin">progress_activity</span>
+            ) : (
+              <>
+                Continue
+                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              </>
+            )}
+          </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

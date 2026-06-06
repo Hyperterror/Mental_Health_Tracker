@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useAuthStore, rehydrateAuthFromSession } from './auth.store';
-import { UserProfile, Role } from '@mindfulprep/shared';
+import { UserProfile } from '@mindfulprep/shared';
 
 describe('Auth Store', () => {
   beforeEach(() => {
@@ -14,12 +14,11 @@ describe('Auth Store', () => {
     sessionStorage.clear();
   });
 
-  const mockUser: UserProfile = {
+  const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
     name: 'Test User',
-    role: 'STUDENT' as any,
-  };
+  } as unknown as UserProfile;
 
   const mockTokens = {
     accessToken: 'mock-access-token',

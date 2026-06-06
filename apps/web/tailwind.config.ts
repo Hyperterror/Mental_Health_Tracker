@@ -10,42 +10,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "mindful-dark": "#0f0e17",
-        "mindful-card": "#1a1a2e",
-        "mindful-indigo": "#1e1b4b",
-        "mindful-teal": "#0d9488",
-        "mindful-gold": "#f59e0b",
-        "mindful-slate": "#64748b",
-        "mindful-text": "#e2e8f0",
+        "primary": "#C8B6A6",
+        "on-primary": "#FFFFFF",
+        "primary-container": "#F1EBE4",
+        "on-primary-container": "#4D453E",
+        "surface": "#FDFBF9",
+        "on-surface": "#2D2926",
+        "surface-variant": "#F2EBE3",
+        "on-surface-variant": "#857D75",
+        "outline": "#D1C7BD",
+        "outline-variant": "#E8E2DA",
+        "wellness-low": "#E6F4EA",
+        "wellness-text": "#1E7E34"
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "teal-gradient": "linear-gradient(135deg, #0d9488 0%, #06b6d4 100%)",
-      },
-      animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "float": "float 6s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite alternate",
-      },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
-        },
-        glow: {
-          "from": { boxShadow: "0 0 10px #0d9488" },
-          "to": { boxShadow: "0 0 30px #0d9488, 0 0 60px #0d9488" },
-        },
+        "headline": ["Public Sans", "sans-serif"],
+        "display": ["Public Sans", "sans-serif"],
+        "body": ["Inter", "sans-serif"],
+        "label": ["Public Sans", "sans-serif"]
       },
       borderRadius: {
         "2xl": "1rem",
         "3xl": "1.5rem",
-      },
-      backdropBlur: {
-        xs: "2px",
+        "xl": "0.75rem",
       },
     },
   },
