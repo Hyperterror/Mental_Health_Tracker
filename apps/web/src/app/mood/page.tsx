@@ -19,7 +19,7 @@ export default function MoodCheckInPage() {
 
   const handleSave = () => {
     // In a real app, save to backend here
-    router.push("/dashboard");
+    router.push("/mood/triggers");
   };
 
   return (
@@ -131,7 +131,7 @@ export default function MoodCheckInPage() {
         <div className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-3 hover:bg-surface-variant transition-colors active:scale-95 duration-100 cursor-pointer">
           <span className="material-symbols-outlined" data-icon="self_improvement">self_improvement</span>
         </div>
-        <div className="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:bg-surface-variant transition-colors active:scale-95 duration-100 cursor-pointer rounded-full" onClick={() => router.push('/journal')}>
+        <div className="flex flex-col items-center justify-center text-on-surface-variant p-3 hover:bg-surface-variant transition-colors active:scale-95 duration-100 cursor-pointer rounded-full" onClick={() => router.push('/profile')}>
           <span className="material-symbols-outlined" data-icon="person">person</span>
         </div>
       </nav>
