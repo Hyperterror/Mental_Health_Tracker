@@ -8,6 +8,7 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ["@mindfulprep/shared"],
   images: {
     domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com"],
   },
