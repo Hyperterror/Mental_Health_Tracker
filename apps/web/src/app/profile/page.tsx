@@ -2,14 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import apiClient from "@/lib/axios";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, clearAuth } = useAuthStore();
 
-  const handleLogout = () => {
-    clearAuth();
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await apiClient.post("/api/v1/auth/logout");
+    } catch (e) {
+      // Proceed with local logout even if server request fails
+    } finally {
+      clearAuth();
+      router.push("/login");
+    }
   };
 
   return (

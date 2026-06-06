@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
 import { UserProfile } from "@mindfulprep/shared";
+import apiClient from "@/lib/axios";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,23 +14,28 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMsg("");
     
-    // Simulate login
-    setTimeout(() => {
-      const mockUser = {
-        id: "user-123",
-        email: email || "student@example.com",
-        name: "Sarah",
-      } as unknown as UserProfile;
+    try {
+      const response = await apiClient.post("/api/v1/auth/login", {
+        email,
+        password,
+      });
+
+      const { user, tokens } = response.data.data;
       
-      setAuth(mockUser, { accessToken: "mock-token", refreshToken: "mock-refresh" });
-      setIsLoading(false);
+      setAuth(user as UserProfile, tokens);
       router.push("/dashboard");
-    }, 1500);
+    } catch (error: any) {
+      setErrorMsg(error.response?.data?.error || "An error occurred during login.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,6 +74,12 @@ export default function LoginPage() {
 
           {/* Login Form Container */}
           <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-8 shadow-[0_10px_40px_-10px_rgba(200,182,166,0.2)]">
+            {errorMsg && (
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm font-medium animate-fade-in flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg">error</span>
+                {errorMsg}
+              </div>
+            )}
             <form className="space-y-6" onSubmit={handleLogin}>
               {/* Email Input */}
               <div className="space-y-2">

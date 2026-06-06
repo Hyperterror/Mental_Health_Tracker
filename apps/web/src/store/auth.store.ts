@@ -1,9 +1,7 @@
 // ============================================================
-// MindfulPrep — Secure Auth Store
-// SECURITY FIX: Tokens stored in memory only (not localStorage)
-// Rationale: localStorage is XSS-accessible. Access tokens are
-// kept in memory; refresh tokens are sent via httpOnly cookie
-// set by the server. This prevents token theft via XSS.
+// MindfulPrep — Auth Store
+// Stores user profile in sessionStorage and tokens in localStorage
+// to be compatible with axios interceptors and page reloads.
 // ============================================================
 
 import { create } from "zustand";
@@ -12,7 +10,7 @@ import type { UserProfile, TokenResponse } from "@mindfulprep/shared";
 interface AuthState {
   // User profile (non-sensitive, safe to persist via sessionStorage)
   user: UserProfile | null;
-  // Access token in memory ONLY — cleared on page refresh (intentional)
+  // Access token in memory and local storage
   accessToken: string | null;
   isAuthenticated: boolean;
   setAuth: (user: UserProfile, tokens: TokenResponse) => void;
@@ -27,8 +25,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   isAuthenticated: false,
 
   setAuth: (user: UserProfile, tokens: TokenResponse) => {
-    // Access token is stored in memory only — never persisted to storage
-    // Refresh token is handled via httpOnly cookie set by server
+    // Store tokens in localStorage for axios to pick up
+    if (typeof window !== "undefined") {
+      localStorage.setItem("accessToken", tokens.accessToken || "");
+      localStorage.setItem("refreshToken", tokens.refreshToken || "");
+    }
+
     set({
       user,
       accessToken: tokens.accessToken,
@@ -58,6 +60,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     if (typeof window !== "undefined") {
       try {
         sessionStorage.removeItem("mindfulprep-user");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
       } catch {
         // ignore
       }
@@ -94,6 +98,8 @@ export function rehydrateAuthFromSession(): void {
   if (typeof window === "undefined") return;
   try {
     const raw = sessionStorage.getItem("mindfulprep-user");
+    const accessToken = localStorage.getItem("accessToken");
+    
     if (!raw) return;
     const parsed = JSON.parse(raw) as {
       user: UserProfile;
@@ -103,12 +109,13 @@ export function rehydrateAuthFromSession(): void {
       useAuthStore.setState({
         user: parsed.user,
         isAuthenticated: true,
-        // accessToken remains null — will be populated by silent refresh
-        accessToken: null,
+        accessToken: accessToken,
       });
     }
   } catch {
     // Corrupted sessionStorage — clear it
     sessionStorage.removeItem("mindfulprep-user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   }
 }
