@@ -15,13 +15,7 @@ export interface TokenPair {
   expiresIn: number; // seconds
 }
 
-/**
- * Registers a new user with the specified credentials.
- * @param data - The user registration payload containing email, name, password, etc.
- * @returns An ApiResponse containing the newly created user and JWT tokens.
- */
-export async function registerUser(data: any): Promise<ApiResponse<{ user: any; accessToken: string; refreshToken: string }>> { expiresIn: number; // seconds
-}
+
 
 export interface RefreshPayload {
   userId: string;
