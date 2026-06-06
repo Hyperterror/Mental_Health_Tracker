@@ -10,8 +10,11 @@ import fp from "fastify-plugin";
 // Extend FastifyRequest to carry decoded user
 // ============================================================
 
-declare module "fastify" {
-  interface FastifyRequest {
+import "@fastify/jwt";
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: { userId: string; email: string };
     user: {
       userId: string;
       email: string;

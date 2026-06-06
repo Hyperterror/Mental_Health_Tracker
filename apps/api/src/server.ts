@@ -23,11 +23,10 @@ export async function buildApp() {
   const app = Fastify({
     logger: {
       level: env.NODE_ENV === "production" ? "info" : "debug",
-      transport:
-        env.NODE_ENV !== "production"
-          ? { target: "pino-pretty", options: { colorize: true } }
-          : undefined,
-    },
+      ...(env.NODE_ENV !== "production" && {
+        transport: { target: "pino-pretty", options: { colorize: true } }
+      }),
+    } as any,
   });
 
   // ── Plugins ──────────────────────────────────────────────
@@ -84,7 +83,7 @@ export async function buildApp() {
 
   // ── Global error handler ──────────────────────────────────
 
-  app.setErrorHandler((error, _request, reply) => {
+  app.setErrorHandler((error: any, _request, reply) => {
     app.log.error({ err: error }, "Unhandled error");
 
     const statusCode = error.statusCode ?? 500;

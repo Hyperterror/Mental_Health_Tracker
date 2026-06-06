@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "AI-powered student mental wellness companion for competitive exam preparation",
+  "packageManager": "npm@10.8.2",
   "workspaces": [
     "apps/*",
     "packages/*"

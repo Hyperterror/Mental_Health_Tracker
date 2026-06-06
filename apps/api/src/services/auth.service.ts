@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import { FastifyInstance } from "fastify";
+import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 
 // ============================================================
@@ -66,14 +67,16 @@ export function generateTokens(
   const ACCESS_EXPIRY_SECONDS = 15 * 60; // 15 minutes
   const REFRESH_EXPIRY_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
-  const accessToken = fastify.jwt.sign(
+  const accessToken = jwt.sign(
     { userId, email },
-    { secret: env.JWT_ACCESS_SECRET, expiresIn: ACCESS_EXPIRY_SECONDS }
+    env.JWT_ACCESS_SECRET,
+    { expiresIn: ACCESS_EXPIRY_SECONDS }
   );
 
-  const refreshToken = fastify.jwt.sign(
+  const refreshToken = jwt.sign(
     { userId },
-    { secret: env.JWT_REFRESH_SECRET, expiresIn: REFRESH_EXPIRY_SECONDS }
+    env.JWT_REFRESH_SECRET,
+    { expiresIn: REFRESH_EXPIRY_SECONDS }
   );
 
   return {
@@ -92,9 +95,7 @@ export function verifyRefreshToken(
   fastify: FastifyInstance
 ): RefreshPayload {
   try {
-    const decoded = fastify.jwt.verify<RefreshPayload>(token, {
-      secret: env.JWT_REFRESH_SECRET,
-    });
+    const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as RefreshPayload;
     return { userId: decoded.userId };
   } catch (err) {
     if (err instanceof Error) {

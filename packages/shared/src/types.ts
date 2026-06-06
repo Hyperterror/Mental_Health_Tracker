@@ -92,13 +92,6 @@ export interface StressTriggerPatternRecord {
   isActive: boolean;
 }
 
-export interface PomodoroRecommendation {
-  mode: SessionMode;
-  workDuration: number;
-  breakDuration: number;
-  label: string;
-  reasoning: string;
-}
 
 export interface PomodoroInput {
   moodScore: number;
