@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMoodStore } from "@/store/mood.store";
 
 const triggers = [
   { id: 1, label: "Exam Pressure", icon: "school" },
@@ -14,7 +15,10 @@ const triggers = [
 
 export default function TriggersPage() {
   const router = useRouter();
+  const { setDraft, submitMoodLog } = useMoodStore();
   const [selected, setSelected] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const toggleTrigger = (id: number) => {
     setSelected(prev => 
@@ -22,9 +26,23 @@ export default function TriggersPage() {
     );
   };
 
-  const handleSave = () => {
-    // In a real app, save to global store/backend here
-    router.push("/dashboard");
+  const handleSave = async () => {
+    setIsLoading(true);
+    setErrorMsg("");
+
+    const selectedTags = selected.map(
+      (id) => triggers.find((t) => t.id === id)?.label || ""
+    ).filter(Boolean);
+
+    setDraft({ tags: selectedTags });
+
+    try {
+      await submitMoodLog();
+      router.push("/dashboard");
+    } catch (error: any) {
+      setErrorMsg(error.response?.data?.error || "Failed to save mood check-in.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,7 +76,13 @@ export default function TriggersPage() {
         {/* Headline & Subheadline */}
         <div className="text-center mb-10">
           <h2 className="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-3">What&apos;s weighing on you?</h2>
-          <p className="text-on-surface-variant font-body leading-relaxed">Identifying your stressors is the first step to managing them. Select all that apply.</p>
+          <p className="text-on-surface-variant font-body leading-relaxed mb-4">Identifying your stressors is the first step to managing them. Select all that apply.</p>
+          {errorMsg && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm font-medium animate-fade-in flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-lg">error</span>
+              {errorMsg}
+            </div>
+          )}
         </div>
 
         {/* Stressors Grid */}
@@ -87,10 +111,20 @@ export default function TriggersPage() {
         <div className="fixed bottom-24 left-0 right-0 px-6 max-w-md mx-auto z-40">
           <button 
             onClick={handleSave}
+            disabled={isLoading}
             className="w-full bg-primary text-white py-4 rounded-full font-headline font-bold text-lg shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex justify-center items-center gap-2"
           >
-            Save and Continue
-            <span className="material-symbols-outlined text-xl">arrow_forward</span>
+            {isLoading ? (
+              <>
+                <span className="material-symbols-outlined animate-spin">sync</span>
+                Saving...
+              </>
+            ) : (
+              <>
+                Save and Continue
+                <span className="material-symbols-outlined text-xl">arrow_forward</span>
+              </>
+            )}
           </button>
         </div>
       </main>

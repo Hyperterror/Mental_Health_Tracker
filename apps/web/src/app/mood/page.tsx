@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMoodStore } from "@/store/mood.store";
 
 const MOODS = [
   { label: "Happy", icon: "😊" },
@@ -13,12 +14,25 @@ const MOODS = [
 
 export default function MoodCheckInPage() {
   const router = useRouter();
+  const setDraft = useMoodStore((state) => state.setDraft);
+  
   const [selectedMood, setSelectedMood] = useState("Happy");
   const [stress, setStress] = useState(5);
   const [energy, setEnergy] = useState(5);
 
+  const moodToScore: Record<string, number> = {
+    "Happy": 5,
+    "Calm": 4,
+    "Neutral": 3,
+    "Anxious": 2,
+    "Overwhelmed": 1,
+  };
+
   const handleSave = () => {
-    // In a real app, save to backend here
+    setDraft({
+      emojiScore: moodToScore[selectedMood] || 3,
+      stressLevel: stress,
+    });
     router.push("/mood/triggers");
   };
 
