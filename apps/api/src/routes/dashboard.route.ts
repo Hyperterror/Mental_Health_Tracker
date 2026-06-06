@@ -150,6 +150,7 @@ export const dashboardRoutes: FastifyPluginAsync = async (fastify) => {
           { moodSum: number; stressSum: number; count: number }
         >();
         for (const log of weeklyLogs) {
+          const fromDate = query.from ? new Date(query.from as string) : undefined;
           const date = new Date(log.createdAt).toISOString().split("T")[0];
           const existing = weeklyMap.get(date) ?? {
             moodSum: 0,

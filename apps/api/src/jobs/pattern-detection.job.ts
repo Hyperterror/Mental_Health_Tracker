@@ -69,7 +69,7 @@ export async function analyzeUserPatterns(userId: string): Promise<void> {
           count: lateNightSessions.length,
           sessionIds: lateNightSessions.map((s) => s.id),
           firstOccurrence: lateNightSessions[0].createdAt,
-        },
+        } as any,
         isCritical: false,
       });
     }
@@ -95,7 +95,7 @@ export async function analyzeUserPatterns(userId: string): Promise<void> {
         details: {
           maxConsecutiveNoBreak,
           totalSessions: sessions.length,
-        },
+        } as any,
         isCritical: false,
       });
     }
@@ -114,7 +114,7 @@ export async function analyzeUserPatterns(userId: string): Promise<void> {
       detectedPatterns.push({
         patternType: PatternType.RECURRING_TRIGGER,
         severity: Math.min(1, count / 7),
-        details: { tag, count, period: "7_days" },
+        details: { tag, count, period: "7_days" } as any,
         isCritical: false,
       });
     }
@@ -137,7 +137,7 @@ export async function analyzeUserPatterns(userId: string): Promise<void> {
           details: {
             avgStress: Math.round(avgStress * 100) / 100,
             daysToExam,
-          },
+          } as any,
           isCritical: true,
         });
       }
@@ -164,7 +164,7 @@ export async function analyzeUserPatterns(userId: string): Promise<void> {
               avgLast3Days: Math.round(avgLast3 * 100) / 100,
               avgPrev4Days: Math.round(avgPrev4 * 100) / 100,
               drop: Math.round((avgPrev4 - avgLast3) * 100) / 100,
-            },
+            } as any,
             isCritical: true,
           });
         }

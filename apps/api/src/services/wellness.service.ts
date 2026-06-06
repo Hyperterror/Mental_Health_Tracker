@@ -346,5 +346,5 @@ export async function getSuggestion(
     },
   });
 
-  return saved;
+  return saved as any;
 }

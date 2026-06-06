@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { recommend, PomodoroInput } from './pomodoro.service';
+import { recommend, PomodoroInput } from './pomodoro.service.js';
 import { SessionMode } from '@mindfulprep/shared';
 
 describe('Pomodoro Service', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { awardPoints, computeSessionPoints, updateStreak } from './gamification.service';
+import { awardPoints, computeSessionPoints, updateStreak } from './gamification.service.js';
 import { BadgeCode } from '@mindfulprep/shared';
 
 describe('Gamification Service', () => {
