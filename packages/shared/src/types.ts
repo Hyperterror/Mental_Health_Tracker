@@ -2,7 +2,7 @@
 // MindfulPrep — Shared TypeScript Interfaces
 // ============================================================
 
-import { ExamType, SuggestionType, SessionMode, PatternType, BadgeCode } from "./enums.js";
+import { ExamType, SuggestionType, SessionMode, PatternType, BadgeCode } from "./enums";
 
 export interface ApiResponse<T = unknown> {
   success: boolean;

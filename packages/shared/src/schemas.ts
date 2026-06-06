@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ExamType, SuggestionType, SessionMode } from "./enums.js";
+import { ExamType, SuggestionType, SessionMode } from "./enums";
 
 // ─────────────────────────── API Response ───────────────────────────
 
