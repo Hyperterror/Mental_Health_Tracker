@@ -3,19 +3,7 @@
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
   "installCommand": "npm install",
-  "env": {
-    "NEXT_PUBLIC_API_URL": {
-      "description": "Render backend API URL",
-      "required": true
-    },
-    "NEXT_PUBLIC_APP_URL": {
-      "description": "Vercel deployment URL",
-      "required": true
-    },
-    "NEXT_PUBLIC_APP_NAME": {
-      "value": "MindfulPrep"
-    }
-  },
+
   "headers": [
     {
       "source": "/(.*)",
