@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "node",
+    "target": "es2022",
+    "module": "esnext"
+  },
+  "include": ["src/**/*"]
+}
