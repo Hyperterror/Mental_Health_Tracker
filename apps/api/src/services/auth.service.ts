@@ -1,5 +1,7 @@
 import argon2 from "argon2";
 import { FastifyInstance } from "fastify";
+import { prisma } from "../config/prisma.js";
+import { RegisterInput, TokenResponse, ApiResponse } from "@mindfulprep/shared";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 

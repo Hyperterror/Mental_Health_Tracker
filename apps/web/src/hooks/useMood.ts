@@ -111,8 +111,8 @@ export function useSubmitMood() {
           const optimistic: MoodLogRecord = {
             id: `optimistic-${Date.now()}`,
             userId: "me",
-            emojiScore: newMood.emojiScore,
-            stressLevel: newMood.stressLevel,
+            emojiScore: newMood.emojiScore ?? 3,
+            stressLevel: newMood.stressLevel ?? 5,
             tags: newMood.tags ?? [],
             journalText: newMood.journalText ?? null,
             createdAt: new Date().toISOString(),
