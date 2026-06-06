@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build",
+    "build": "turbo run build --filter=@mindfulprep/web",
+    "build:all": "turbo run build",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "db:generate": "prisma generate --schema=./prisma/schema.prisma",
