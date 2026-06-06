@@ -1,0 +1,42 @@
+{
+  "buildCommand": "cd apps/web && npm install && npm run build",
+  "outputDirectory": "apps/web/.next",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "env": {
+    "NEXT_PUBLIC_API_URL": {
+      "description": "Render backend API URL",
+      "required": true
+    },
+    "NEXT_PUBLIC_APP_URL": {
+      "description": "Vercel deployment URL",
+      "required": true
+    },
+    "NEXT_PUBLIC_APP_NAME": {
+      "value": "MindfulPrep"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), microphone=()"
+        }
+      ]
+    }
+  ]
+}

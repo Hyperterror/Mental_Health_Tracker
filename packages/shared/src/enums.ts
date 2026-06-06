@@ -1,0 +1,56 @@
+// ============================================================
+// MindfulPrep — Shared Enums
+// Used by both frontend and backend
+// ============================================================
+
+export enum ExamType {
+  JEE = "JEE",
+  NEET = "NEET",
+  CUET = "CUET",
+  CAT = "CAT",
+  GATE = "GATE",
+  UPSC = "UPSC",
+  BOARDS = "BOARDS",
+  OTHER = "OTHER",
+}
+
+export enum SuggestionType {
+  BREATHING = "BREATHING",
+  HYDRATION = "HYDRATION",
+  STRETCH = "STRETCH",
+  TASK_SWITCH = "TASK_SWITCH",
+  REST = "REST",
+  JOURNAL = "JOURNAL",
+  MINDFULNESS = "MINDFULNESS",
+  COGNITIVE_REFRAMING = "COGNITIVE_REFRAMING",
+}
+
+export enum SessionMode {
+  CALM = "CALM",
+  STANDARD = "STANDARD",
+  RECOVERY = "RECOVERY",
+  FLOW = "FLOW",
+}
+
+export enum PatternType {
+  LATE_NIGHT_STUDY = "LATE_NIGHT_STUDY",
+  NO_BREAK_STREAK = "NO_BREAK_STREAK",
+  RECURRING_TRIGGER = "RECURRING_TRIGGER",
+  PRE_EXAM_ANXIETY_SPIKE = "PRE_EXAM_ANXIETY_SPIKE",
+  MOOD_DECLINE_TREND = "MOOD_DECLINE_TREND",
+  FATIGUE_PATTERN = "FATIGUE_PATTERN",
+}
+
+export enum BadgeCode {
+  FIRST_CALM_SESSION = "FIRST_CALM_SESSION",
+  FIVE_DAY_STREAK = "FIVE_DAY_STREAK",
+  TEN_DAY_STREAK = "TEN_DAY_STREAK",
+  HYDRATION_HERO = "HYDRATION_HERO",
+  RECOVERY_MODE_MASTER = "RECOVERY_MODE_MASTER",
+  JOURNAL_KEEPER = "JOURNAL_KEEPER",
+  EARLY_BIRD = "EARLY_BIRD",
+  NIGHT_OWL_DETECTED = "NIGHT_OWL_DETECTED",
+  MINDFUL_BREATHER = "MINDFUL_BREATHER",
+  FOCUS_100 = "FOCUS_100",
+  MOOD_LOGGER_7 = "MOOD_LOGGER_7",
+}

@@ -1,0 +1,27 @@
+{
+  "name": "MindfulPrep",
+  "short_name": "MindfulPrep",
+  "description": "Your calm companion through the storm of competitive exams",
+  "theme_color": "#0d9488",
+  "background_color": "#0f0e17",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["education", "health", "lifestyle"],
+  "screenshots": []
+}

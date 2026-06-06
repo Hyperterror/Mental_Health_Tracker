@@ -1,0 +1,205 @@
+// ============================================================
+// MindfulPrep — Prisma Schema
+// Database: PostgreSQL via Supabase
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// ─────────────────────────── Enums ───────────────────────────
+
+enum ExamType {
+  JEE
+  NEET
+  CUET
+  CAT
+  GATE
+  UPSC
+  BOARDS
+  OTHER
+}
+
+enum SuggestionType {
+  BREATHING
+  HYDRATION
+  STRETCH
+  TASK_SWITCH
+  REST
+  JOURNAL
+  MINDFULNESS
+  COGNITIVE_REFRAMING
+}
+
+enum SessionMode {
+  CALM       // 15-5 min
+  STANDARD   // 25-5 min
+  RECOVERY   // 35-10 min
+  FLOW       // custom long session
+}
+
+enum PatternType {
+  LATE_NIGHT_STUDY
+  NO_BREAK_STREAK
+  RECURRING_TRIGGER
+  PRE_EXAM_ANXIETY_SPIKE
+  MOOD_DECLINE_TREND
+  FATIGUE_PATTERN
+}
+
+enum BadgeCode {
+  FIRST_CALM_SESSION
+  FIVE_DAY_STREAK
+  TEN_DAY_STREAK
+  HYDRATION_HERO
+  RECOVERY_MODE_MASTER
+  JOURNAL_KEEPER
+  EARLY_BIRD
+  NIGHT_OWL_DETECTED
+  MINDFUL_BREATHER
+  FOCUS_100
+  MOOD_LOGGER_7
+}
+
+// ─────────────────────────── Models ───────────────────────────
+
+model User {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  passwordHash        String
+  name                String
+  examType            ExamType @default(OTHER)
+  targetExamDate      DateTime?
+  dailyGoalMinutes    Int      @default(150)
+  stressCheckInTime   String   @default("21:00")
+  cameraOptIn         Boolean  @default(false)
+  isMinor             Boolean  @default(false)
+  parentEmail         String?
+  parentConsentGiven  Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  lastLoginAt         DateTime?
+  refreshTokenHash    String?
+
+  // Relations
+  moodLogs             MoodLog[]
+  studySessions        StudySession[]
+  wellnessSuggestions  WellnessSuggestion[]
+  gamificationRecord   GamificationRecord?
+  stressTriggerPatterns StressTriggerPattern[]
+  fatigueEvents        FatigueEvent[]
+
+  @@index([email])
+}
+
+model MoodLog {
+  id          String   @id @default(cuid())
+  userId      String
+  emojiScore  Int      // 1–5
+  stressLevel Int      // 1–10
+  tags        String[]
+  journalText String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, emojiScore])
+}
+
+model StudySession {
+  id                 String      @id @default(cuid())
+  userId             String
+  examType           ExamType
+  startMoodScore     Int?        // Mood at start (1–5)
+  startStressLevel   Int?        // Stress at start (1–10)
+  mode               SessionMode @default(STANDARD)
+  workDuration       Int         // Recommended work duration in minutes
+  breakDuration      Int         // Recommended break duration in minutes
+  completedPomodoros Int         @default(0)
+  breaksTaken        Int         @default(0)
+  breakCompliance    Float       @default(0) // 0.0–1.0
+  triggerFlags       String[]    // e.g. ["FATIGUE_DETECTED", "LONG_FOCUS_NO_BREAK"]
+  wellnessScore      Float?      // Computed on session end (0–100)
+  isActive           Boolean     @default(true)
+  lastHeartbeat      DateTime    @default(now())
+  endTime            DateTime?
+  createdAt          DateTime    @default(now())
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fatigueEvents FatigueEvent[]
+
+  @@index([userId, createdAt])
+  @@index([userId, isActive])
+}
+
+model WellnessSuggestion {
+  id             String         @id @default(cuid())
+  userId         String
+  type           SuggestionType
+  content        String         @db.Text
+  triggerContext String
+  isAiGenerated  Boolean        @default(false)
+  dismissed      Boolean        @default(false)
+  acted          Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, dismissed])
+}
+
+model GamificationRecord {
+  id              String      @id @default(cuid())
+  userId          String      @unique
+  currentStreak   Int         @default(0)
+  longestStreak   Int         @default(0)
+  streakFreezes   Int         @default(1)
+  calmFocusPoints Int         @default(0)
+  badges          BadgeCode[]
+  lastActivity    DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model StressTriggerPattern {
+  id          String      @id @default(cuid())
+  userId      String
+  patternType PatternType
+  frequency   Int         @default(1)
+  severity    Float       @default(0.5) // 0.0–1.0
+  details     Json
+  detectedAt  DateTime    @default(now())
+  lastSeenAt  DateTime    @default(now())
+  isActive    Boolean     @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, patternType])
+  @@index([userId, isActive])
+  @@index([userId, detectedAt])
+}
+
+model FatigueEvent {
+  id              String   @id @default(cuid())
+  userId          String
+  sessionId       String
+  confidenceScore Float    // 0.0–1.0 (from face-api.js)
+  signalType      String   // e.g. "eyes_closed", "head_slump", "blink_deviation"
+  breakTriggered  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session StudySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([sessionId])
+}
