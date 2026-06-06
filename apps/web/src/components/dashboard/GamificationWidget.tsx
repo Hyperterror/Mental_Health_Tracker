@@ -30,12 +30,12 @@ export function GamificationWidget() {
           <div className="h-3 w-full bg-black/20 rounded-full overflow-hidden backdrop-blur-sm">
             <div 
               className="h-full bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] relative" 
-              style={{ width: `${Math.min(100, (data.xp / (data.level * 1000)) * 100)}%` }}
+              style={{ width: `${Math.min(100, ((data.xp || 0) / ((data.level || 1) * 1000)) * 100)}%` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white opacity-50 animate-[shimmer_2s_infinite]"></div>
             </div>
           </div>
-          <p className="text-xs mt-2 text-center opacity-80">{data.xp} / {data.level * 1000} XP</p>
+          <p className="text-xs mt-2 text-center opacity-80">{data.xp || 0} / {(data.level || 1) * 1000} XP</p>
         </div>
         <div className="text-center">
           <p className="text-3xl font-black">{data.streak || 0}</p>
